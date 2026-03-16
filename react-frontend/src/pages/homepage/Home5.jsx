@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 const Home5 = ({
   breadcrumb = false,
@@ -8,6 +8,34 @@ const Home5 = ({
   formTitle = "",
   formSubtitle = ""
 }) => {
+
+  const [name,setName] = useState("")
+  const [email,setEmail] = useState("")
+  const [message,setMessage] = useState("")
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+
+    const response = await fetch("http://127.0.0.1:8000/contact",{
+      method:"POST",
+      headers:{
+        "Content-Type":"application/json"
+      },
+      body:JSON.stringify({
+        name:name,
+        email:email,
+        message:message
+      })
+    })
+
+    const data = await response.json()
+    alert(data.message)
+
+    setName("")
+    setEmail("")
+    setMessage("")
+  }
+
   return (
     <>
       <div className="home5-container">
@@ -52,10 +80,30 @@ const Home5 = ({
             {formTitle && <h3>{formTitle}</h3>}
             {formSubtitle && <p>{formSubtitle}</p>}
 
-            <form>
-              <input type="text" placeholder="Your Name" required />
-              <input type="email" placeholder="Your Email" required />
-              <textarea placeholder="Your Message" required></textarea>
+            <form onSubmit={handleSubmit}>
+              <input 
+                type="text" 
+                placeholder="Your Name" 
+                value={name}
+                onChange={(e)=>setName(e.target.value)}
+                required 
+              />
+
+              <input 
+                type="email" 
+                placeholder="Your Email" 
+                value={email}
+                onChange={(e)=>setEmail(e.target.value)}
+                required 
+              />
+
+              <textarea 
+                placeholder="Your Message" 
+                value={message}
+                onChange={(e)=>setMessage(e.target.value)}
+                required
+              ></textarea>
+
               <button type="submit">Send Message</button>
             </form>
 
